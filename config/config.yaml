@@ -1,0 +1,89 @@
+broker:
+  host: "localhost"
+  port: 1883
+  keepalive: 60
+
+topics:
+  sensors:
+    cabin_temp: "sensors/cabin_temp"
+    cabin_humidity: "sensors/cabin_humidity"
+    occupancy: "sensors/occupancy"
+    battery_soc: "sensors/battery_soc"
+    outside_temp: "sensors/outside_temp"
+    departure_time: "sensors/departure_time"
+  state:
+    current: "state/current"
+  planning:
+    problem: "planning/problem"
+    plan: "planning/plan"
+  actuators:
+    charging_plug_cmd: "actuators/charging_plug/cmd"
+    charging_plug_status: "actuators/charging_plug/status"
+    cabin_heater_cmd: "actuators/cabin_heater/cmd"
+    cabin_heater_status: "actuators/cabin_heater/status"
+    ambient_light_cmd: "actuators/ambient_light/cmd"
+    ambient_light_status: "actuators/ambient_light/status"
+    seat_warmer_cmd: "actuators/seat_warmer/cmd"
+    seat_warmer_status: "actuators/seat_warmer/status"
+    infotainment_cmd: "actuators/infotainment/cmd"
+    infotainment_status: "actuators/infotainment/status"
+    plugwise_status: "actuators/plugwise/status"
+  events:
+    replan: "events/replan"
+    calendar_shift: "events/calendar_shift"
+    charger_fault: "events/charger_fault"
+    user_arrives: "events/user_arrives"
+  control:
+    # Manual override console (modules/iot_node/override_console.py) tells the
+    # DHT/PIR sensors to step aside so it can publish presentation values instead.
+    dht_override: "control/dht_override"
+    occupancy_override: "control/occupancy_override"
+
+simulation:
+  time_scale: 60          # 1 real second = 60 simulation seconds
+  tick_interval_s: 1.0    # real seconds between each simulation tick
+
+battery:
+  initial_soc: 50.0         # % — start at 50% for demo
+  # 3.7 kW is a standard 16A Type-2 home AC charger (3700W)
+  charge_rate_kw: 3.7
+  slow_charge_rate_kw: 1.85 # taper phase (>80% SoC)
+  capacity_kwh: 10.0        # kWh — compact demo EV so charging completes in time
+  taper_threshold: 80.0     # % SoC above which tapering begins
+
+climate:
+  initial_cabin_temp: 10.0    # °C — cold morning cabin
+  cooling_coefficient: 0.02   # Newton cooling k factor per sim-minute
+  heater_delta_per_min: 0.8   # °C per sim-minute when HVAC is on
+  seat_warmer_power_w: 150    # W
+
+hvac:
+  power_w: 2000               # W
+
+# Power budget: 25A single-phase → 25 × 230V = 5750W
+# charger (3700W) + HVAC (2000W) = 5700W  ≤ 5750W  → can overlap
+# charger + HVAC + seat warmer (150W) = 5850W > 5750W → cannot all run at once
+power:
+  max_power_w: 5750
+
+weather:
+  api_url: "https://api.open-meteo.com/v1/forecast"
+  latitude: 48.78
+  longitude: 9.18
+  default_outside_temp: 5.0   # °C fallback when API unavailable
+  refresh_interval_s: 300     # every 5 real minutes
+
+grovepi:
+  dht_port: 7           # DHT sensor on GrovePi digital port D7
+  dht_type: 0           # 0 = DHT11 (GrovePi starter kit default), 1 = DHT22
+  pir_port: 8           # PIR sensor on GrovePi digital port D8
+  led_port: 2           # LED on GrovePi digital port D2
+  relay_port: 6         # Relay on GrovePi digital port D6
+  dht_poll_interval_s: 2.0
+  pir_poll_interval_s: 0.5
+  relay_soft_fallback: true   # set true if relay is unreliable
+
+planner:
+  jar_path: "planner/enhsp.jar"
+  domain_path: "pddl/domain.pddl"
+  timeout_s: 10

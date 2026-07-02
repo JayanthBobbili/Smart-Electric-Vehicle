@@ -1,0 +1,465 @@
+/* ============================================================
+   Smart EV Charging & Cabin Prep — Dashboard Styles
+   Group 22 · University of Stuttgart
+   ============================================================ */
+
+:root {
+  --bg-deep:      #0d1117;
+  --bg-panel:     #161b22;
+  --bg-card:      #21262d;
+  --border:       #30363d;
+  --accent-green: #3fb950;
+  --accent-blue:  #58a6ff;
+  --accent-orange:#d29922;
+  --accent-red:   #f85149;
+  --accent-teal:  #39d0d8;
+  --text-primary: #e6edf3;
+  --text-muted:   #8b949e;
+  --font:         'Segoe UI', system-ui, -apple-system, sans-serif;
+  --radius:       10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.top-bar__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.top-bar__title .ev-icon { font-size: 1.2rem; }
+
+.top-bar__title .subtitle {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+}
+
+.top-bar__status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.status-dot--connected    { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+.status-dot--disconnected { background: var(--accent-red);   box-shadow: 0 0 6px var(--accent-red); }
+
+.top-bar__triggers {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn:hover  { opacity: 0.85; }
+.btn:active { transform: scale(0.97); }
+.btn--warning { background: var(--accent-orange); color: #000; }
+.btn--danger  { background: var(--accent-red);    color: #fff; }
+.btn--info    { background: var(--accent-blue);   color: #000; }
+.btn--neutral { background: var(--bg-card);       color: var(--text-primary); border: 1px solid var(--border); }
+.btn--xs      { padding: 0.2rem 0.5rem; font-size: 0.7rem; }
+
+/* ============================================================
+   GRID LAYOUT
+   ============================================================ */
+.grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 220px;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "state  cockpit  log"
+    "plan   plan     log";
+  gap: 1rem;
+  padding: 1rem;
+  height: calc(100vh - 54px);
+  overflow: hidden;
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel--state   { grid-area: state; }
+.panel--cockpit { grid-area: cockpit; }
+.panel--plan    { grid-area: plan; }
+.panel--log     { grid-area: log; }
+
+/* ============================================================
+   LIVE STATE PANEL
+   ============================================================ */
+
+/* SoC Gauge */
+.gauge-wrap { display: flex; justify-content: center; margin-bottom: 0.5rem; }
+
+.soc-gauge {
+  width: 180px;
+  height: 100px;
+  overflow: visible;
+}
+
+.gauge-track { stroke: var(--bg-card); }
+.gauge-fill  { stroke: var(--accent-green); stroke-linecap: round; transition: stroke-dasharray 0.6s ease; }
+
+.gauge-label {
+  font-size: 22px;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+.gauge-sublabel {
+  font-size: 9px;
+  fill: var(--text-muted);
+}
+
+/* Metric rows */
+.metric-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.metric-icon { font-size: 1rem; line-height: 1.6; }
+
+.metric-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.metric-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.metric-value { font-size: 1rem; font-weight: 600; }
+.countdown    { color: var(--accent-teal); font-size: 1.1rem; }
+
+/* Cabin temp bar */
+.temp-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.temp-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.temp-bar::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  width: var(--temp-pct, 0%);
+  background: linear-gradient(to right, var(--accent-blue), var(--accent-orange));
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.temp-value { font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+.temp-target { font-size: 0.68rem; color: var(--text-muted); }
+
+/* Occupancy dot */
+.occupancy-dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  transition: background 0.3s;
+}
+.occupancy-dot--on  { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+.occupancy-dot--off { background: var(--bg-card); border: 1px solid var(--border); }
+
+/* Actuator badges */
+.actuator-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  cursor: default;
+}
+
+.badge--on {
+  background: rgba(63,185,80,0.15);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  box-shadow: 0 0 6px rgba(63,185,80,0.3);
+}
+
+.badge--fault {
+  background: rgba(248,81,73,0.15);
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+/* ============================================================
+   EV COCKPIT PANEL
+   ============================================================ */
+.synthetic-tag {
+  font-size: 0.6rem;
+  background: rgba(88,166,255,0.15);
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.cockpit-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.ev-svg {
+  max-height: calc(100% - 40px);
+  width: auto;
+}
+
+/* Car body */
+.car-body    { fill: #1c2128; stroke: var(--border); stroke-width: 2; }
+.windshield  { fill: rgba(88,166,255,0.15); stroke: var(--accent-blue); stroke-width: 1.5; }
+.windshield.rear { fill: rgba(88,166,255,0.10); }
+.wheel       { fill: #0d1117; stroke: #444; stroke-width: 1.5; }
+
+/* Battery floor */
+.battery-floor { fill: #0d1117; stroke: var(--border); stroke-width: 1.5; }
+.battery-fill  {
+  fill: var(--accent-green);
+  opacity: 0.6;
+  transition: width 0.8s ease;
+}
+.battery-pct {
+  fill: var(--text-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Seat warm glow */
+.seat-glow {
+  fill: #ff8c00;
+  transition: opacity 0.6s ease;
+}
+
+/* Charging cable */
+.cable-line { stroke: var(--accent-green); stroke-linecap: round; }
+.cable-plug { fill: var(--accent-green); }
+.cable-glow { fill: var(--accent-green); }
+
+/* Plugwise plugs */
+.plugwise-plug { fill: #444; stroke: #666; stroke-width: 1; transition: fill 0.3s, opacity 0.3s; }
+.plugwise-plug--on { fill: #d29922; opacity: 1 !important; }
+.plugwise-label { font-size: 8px; fill: var(--text-muted); }
+
+/* Dashboard screen */
+.dash-screen {
+  fill: #0d1117;
+  stroke: var(--border);
+  stroke-width: 1;
+  transition: fill 0.4s;
+}
+.dash-screen--active { fill: #0b2a2b; stroke: var(--accent-teal); }
+.dash-text {
+  font-size: 9px;
+  fill: var(--text-muted);
+  transition: fill 0.4s;
+}
+.dash-text--active { fill: var(--accent-teal); }
+
+/* LED strips */
+.led-strip {
+  fill: transparent;
+  transition: fill 0.4s, filter 0.4s;
+}
+.led-strip--on {
+  fill: rgba(63,185,80,0.6);
+  filter: drop-shadow(0 0 4px var(--accent-green));
+}
+
+/* HVAC vents */
+.vent { fill: var(--text-muted); }
+#hvac-vents.active { opacity: 1; }
+
+/* Plugwise status row */
+.plugwise-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.plugwise-label-text { font-size: 0.65rem; }
+
+/* ============================================================
+   PLAN TIMELINE PANEL
+   ============================================================ */
+.plan-meta {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.chart-container {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+#gantt-canvas { width: 100% !important; height: 100% !important; }
+
+/* ============================================================
+   EVENT LOG PANEL
+   ============================================================ */
+.log-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-family: 'Cascadia Code', 'Fira Mono', monospace;
+}
+
+.log-scroll::-webkit-scrollbar { width: 4px; }
+.log-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.log-placeholder { color: var(--text-muted); font-style: italic; }
+
+.log-entry {
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  background: var(--bg-card);
+  border-left: 3px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.log-entry--sensor  { border-color: var(--accent-blue); }
+.log-entry--state   { border-color: var(--text-muted); }
+.log-entry--plan    { border-color: var(--accent-green); }
+.log-entry--event   { border-color: var(--accent-orange); }
+.log-entry--actuator { border-color: var(--accent-teal); }
+
+.log-ts    { color: var(--text-muted); font-size: 0.62rem; }
+.log-topic { color: var(--accent-blue); font-weight: 600; word-break: break-all; }
+.log-body  { color: var(--text-primary); word-break: break-all; white-space: pre-wrap; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "state  cockpit"
+      "plan   plan"
+      "log    log";
+    height: auto;
+  }
+  .panel--state, .panel--cockpit { max-height: 60vh; }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "state"
+      "cockpit"
+      "plan"
+      "log";
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "departure_time": "2026-06-24T08:00:00",
+  "sim_minutes_until_departure": 60.0,
+  "target_soc": 80.0,
+  "target_cabin_temp": 22.0,
+  "destination": "Stuttgart HBF"
+}

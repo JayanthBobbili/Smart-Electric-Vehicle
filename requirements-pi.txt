@@ -1,0 +1,13 @@
+# paho-mqtt is pinned <2.0 on purpose: the code uses the paho 1.x callback API
+# (on_connect(client, userdata, flags, rc)). paho-mqtt 2.x is a breaking change —
+# do not bump it without updating modules/common/mqtt_client.py.
+paho-mqtt>=1.6,<2.0
+pyyaml>=6.0
+
+# --- System (apt) dependencies — NOT installed by pip ---
+# The GrovePi+ hat needs the I2C stack plus the (old, 2018) grovepi library:
+#   sudo apt install -y python3-smbus i2c-tools
+#   sudo pip3 install grovepi==1.0.4        # add --break-system-packages on Bookworm
+# grovepi does `import smbus` (legacy). If that fails on Bookworm, install smbus2 and
+# patch grovepi's import to `import smbus2 as smbus`. The pi user must be in the `i2c`
+# group to access the hat without sudo. See docs/deployment_guide.md Step 2.5.
